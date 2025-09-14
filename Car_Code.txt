@@ -1,0 +1,101 @@
+
+#include<Servo.h>
+#define triger 9
+#define echo 8 
+Servo ServoMoter;
+float distance =0;
+long duration =0;
+int m11=6;   //leftforward
+int m12=7;    //leftbackward
+int m21=3;  //rightFOEWARD
+int m22=2;   //rightBACKWARD
+void setup()
+{
+  Serial.begin(9600);
+  ServoMoter.attach(13);
+  pinMode(triger,OUTPUT);
+  pinMode(echo,INPUT);
+  pinMode(m11,OUTPUT); 
+  pinMode(m21,OUTPUT); 
+  pinMode(m12,OUTPUT); 
+  pinMode(m22,OUTPUT);    
+}
+
+void loop()
+{
+  digitalWrite(triger,LOW);
+  delayMicroseconds(5);
+   digitalWrite(triger,HIGH);
+  delayMicroseconds(10);
+  digitalWrite(triger,LOW);
+  duration=pulseIn(echo,HIGH);
+  distance=duration*0.01715;
+  
+  ServoMoter.write(90);
+  
+  if(distance<=30)  
+  { 
+
+    digitalWrite(m11,LOW);//revers
+    digitalWrite(m12,HIGH);
+    digitalWrite(m21,LOW);
+    digitalWrite(m22,HIGH);
+    delay(2000);
+    ServoMoter.write(0);  //LEFT
+    delay(1000);
+    digitalWrite(m11,HIGH);
+    digitalWrite(m12,LOW);
+    digitalWrite(m22,LOW);
+    digitalWrite(m22,LOW);
+    delay(2000);
+    
+    digitalWrite(triger,LOW);
+  delayMicroseconds(5);
+   digitalWrite(triger,HIGH);
+  delayMicroseconds(10);
+  digitalWrite(triger,LOW);
+  duration=pulseIn(echo,HIGH);
+  distance=duration*0.01715;
+        
+        if(distance<=40)
+        {
+          digitalWrite(m11,LOW); //revers
+          digitalWrite(m12,HIGH);
+          digitalWrite(m21,LOW);
+          digitalWrite(m22,HIGH);
+          delay(2000);
+        ServoMoter.write(180); //right
+        delay(1000);
+        digitalWrite(m11,LOW);
+        digitalWrite(m12,LOW);
+        digitalWrite(m21,HIGH);
+        digitalWrite(m22,LOW);
+        delay(2000);
+        digitalWrite(m11,HIGH);
+        digitalWrite(m12,LOW);
+        digitalWrite(m21,HIGH);
+        digitalWrite(m22,LOW);
+        }
+          else
+          {
+          digitalWrite(m11,HIGH);
+          digitalWrite(m12,LOW);
+          digitalWrite(m21,HIGH);
+          digitalWrite(m22,LOW);
+          }
+  }
+  else 
+  {
+    digitalWrite(m11,HIGH); //front
+    digitalWrite(m12,LOW);
+    digitalWrite(m21,HIGH);
+    digitalWrite(m22,LOW);
+   
+  }
+  
+  Serial.print("Distance = ");
+   Serial.print(distance);
+  Serial.print("cm");
+    Serial.print("\n");
+  delay(1000);
+}
